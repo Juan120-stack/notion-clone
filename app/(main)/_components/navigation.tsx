@@ -1,15 +1,18 @@
 "use client"
 
-import { cn } from '@/lib/utils'
-import { ChevronsLeft, MenuIcon, PlusCircle, Search, Settings } from 'lucide-react'
+import { ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings, Trash } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { ElementRef, useEffect, useRef, useState } from 'react'
 import { useMediaQuery } from 'usehooks-ts'
-import UserItem from './user-item'
-import { useMutation, useQuery } from 'convex/react'
-import { api } from '@/convex/_generated/api'
-import Item from './item'
+import { useMutation } from 'convex/react'
 import { toast } from 'sonner'
+
+import { cn } from '@/lib/utils'
+import { api } from '@/convex/_generated/api'
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
+
+import Item from './item'
+import UserItem from './user-item'
 import DocumentList from './document-list'
 
 function Navigation() {
@@ -24,7 +27,7 @@ function Navigation() {
     const [isCollapsed, setIsCollapsed] = useState(isMobile)
 
     useEffect(() => {
-        if(isMobile) {
+        if (isMobile) {
             collapse()
         } else {
             resetWidth()
@@ -71,19 +74,19 @@ function Navigation() {
         if (sidebarRef.current && navbarRef.current) {
             setIsCollapsed(false)
             setIsResetting(true)
-    
+
             sidebarRef.current.style.width = isMobile ? "100%" : "240px"
             navbarRef.current.style.setProperty("width", isMobile ? "0" : "calc(100% - 240px)")
             navbarRef.current.style.setProperty("left", isMobile ? "100%" : "240px")
             setTimeout(() => setIsResetting(false), 300)
         }
     }
-    
+
     const collapse = () => {
-        if(sidebarRef.current && navbarRef.current) {
+        if (sidebarRef.current && navbarRef.current) {
             setIsCollapsed(true)
             setIsResetting(true)
-    
+
             sidebarRef.current.style.width = "0"
             navbarRef.current.style.setProperty("width", "100%")
             navbarRef.current.style.setProperty("left", "0")
@@ -92,13 +95,13 @@ function Navigation() {
     }
 
     const handelCreate = () => {
-        const promise = create({title : "Untitled"})
+        const promise = create({ title: "Untitled" })
 
         toast.promise(promise, {
             loading: "Createing a new note...",
             success: "New note created!",
             error: "Failed to create a new note."
-        } )
+        })
     }
 
     return (
@@ -123,26 +126,45 @@ function Navigation() {
                 </div>
                 <div>
                     <UserItem />
-                    <Item 
+                    <Item
                         label='Search'
                         icon={Search}
                         isSearch
-                        onClick={() => {}}
+                        onClick={() => { }}
 
                     />
-                    <Item 
+                    <Item
                         label='Settings'
                         icon={Settings}
-                        onClick={() => {}}
+                        onClick={() => { }}
                     />
-                    <Item 
-                        onClick={handelCreate} 
-                        label="New Page" 
-                        icon={PlusCircle} 
+                    <Item
+                        onClick={handelCreate}
+                        label="New Page"
+                        icon={PlusCircle}
                     />
                 </div>
                 <div className='mt-4'>
                     <DocumentList />
+                    <Item
+                        onClick={handelCreate}
+                        icon={Plus}
+                        label='Add a Page'
+                    />
+                    <Popover>
+                        <PopoverTrigger className='w-full mt-4'>
+                            <Item 
+                                label='Trash'
+                                icon={Trash}
+                            />
+                        </PopoverTrigger>
+                        <PopoverContent
+                            className='p-0 w-72'
+                            side={isMobile ? "bottom": "right"}
+                        >
+                            <p>Trash Box</p>
+                        </PopoverContent>
+                    </Popover>
                 </div>
                 <div
                     onMouseDown={handleMouseDown}
