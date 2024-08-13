@@ -10,6 +10,7 @@ import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { api } from '@/convex/_generated/api'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
+import { useSearch } from '@/hooks/use-search'
 
 import Item from './item'
 import UserItem from './user-item'
@@ -17,6 +18,7 @@ import DocumentList from './document-list'
 import TrashBox from './tras-box'
 
 function Navigation() {
+    const search = useSearch()
     const pathname = usePathname()
     const isMobile = useMediaQuery('(max-width: 768px)')
     const create = useMutation(api.documents.create)
@@ -131,7 +133,7 @@ function Navigation() {
                         label='Search'
                         icon={Search}
                         isSearch
-                        onClick={() => { }}
+                        onClick={search.onOpen}
 
                     />
                     <Item
