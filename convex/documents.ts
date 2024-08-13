@@ -145,12 +145,15 @@ export const restore = mutation({
       throw new Error("Unauthorized");
     }
 
+
     const recursiveRestore = async (documentId: Id<"documents">) => {
       const children = await ctx.db
         .query("documents")
-        .withIndex("by_user_parent", (q) =>
-          q.eq("userId", userId).eq("parentDocument", documentId)
-        )
+        .withIndex("by_user_parent", (q) =>(
+          q
+            .eq("userId", userId)
+            .eq("parentDocument", documentId)
+        ))
         .collect();
 
       for (const child of children) {
