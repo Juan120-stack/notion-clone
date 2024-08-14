@@ -36,8 +36,13 @@ function CoverImageModal() {
             setFile(file)
 
             const res = await edgestore.publicFiles.upload({
-                file
+                file,
+                options: {
+                    replaceTargetUrl: coverImage.url
+                }
             })
+
+
 
             await update({
                 id: params.documentsId as Id<"documents">,
@@ -57,7 +62,7 @@ function CoverImageModal() {
                         Cover Image
                     </h2>
                 </DialogHeader>
-                <SingleImageDropzone 
+                <SingleImageDropzone
                     className='w-full outline-none'
                     disabled={isSubmitting}
                     value={file}
